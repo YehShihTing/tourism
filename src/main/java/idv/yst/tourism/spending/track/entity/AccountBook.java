@@ -35,4 +35,8 @@ public class AccountBook {
 	public void setExpenses(List<Expense> expenses) {
 		this.expenses = expenses;
 	}
+
+	public void addExpense(Expense expense) {
+		getExpenses().add(expense);
+	}
 }

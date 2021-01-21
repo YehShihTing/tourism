@@ -2,18 +2,51 @@ package idv.yst.tourism.spending.track.service;
 
 import java.util.List;
 
+import com.google.common.base.Strings;
+
 import idv.yst.tourism.spending.track.entity.AccountBook;
 import idv.yst.tourism.spending.track.gateway.persistence.AccountBookDataAccessor;
 
 public class AccountBookManager {
 	AccountBookDataAccessor accountBookDataAccessor;
+	private List<AccountBook> accountBooks;
 
-	public boolean createAccountBook(AccountBook accountBook) {
-		return accountBookDataAccessor.createAccountBook(accountBook);
+	public AccountBookManager() {}
+
+	public AccountBook createAccountBook() {
+		return createAccountBook("newAccountBook", "");
+	}
+
+	public AccountBook createAccountBook(String name, String description) {
+		AccountBook accountBook = new AccountBook();
+		if (!Strings.isNullOrEmpty(name)) {
+			accountBook.setName(name);
+		}
+		if (!Strings.isNullOrEmpty(description)) {
+			accountBook.setDescription(description);
+		}
+		accountBookDataAccessor.createAccountBook(accountBook);
+		return accountBook;
 	}
 
 	public List<AccountBook> getAllAccountBooks() {
-		return accountBookDataAccessor.getAllAccountBooks();
+		return getAllAccountBooks(false);
+	}
+
+	public List<AccountBook> getAllAccountBooks(boolean reload) {
+		if (accountBooks == null || reload) {
+			accountBooks = accountBookDataAccessor.getAllAccountBooks();
+		}
+		return accountBooks;
+	}
+
+	public AccountBook getAccountBookByName(String accountBookName) {
+		for (AccountBook accountBook : getAllAccountBooks()) {
+			if (accountBook.getName().equalsIgnoreCase(accountBookName)) {
+				return accountBook;
+			}
+		}
+		return null;
 	}
 
 	public boolean updateAccountBook(AccountBook accountBook) {
